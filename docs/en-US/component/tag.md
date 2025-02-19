@@ -53,7 +53,7 @@ tag/theme
 
 :::
 
-## Rounded <el-tag>> 2.1.7</el-tag>
+## Rounded
 
 Tag can also be rounded like button.
 
@@ -63,9 +63,9 @@ tag/rounded
 
 :::
 
-## Checkable tag
+## Checkable Tag
 
-Sometimes because of the business needs, we might need checkbox like tag, but **button like checkbox** cannot meet our needs, here comes `check-tag`
+Sometimes because of the business needs, we might need checkbox like tag, but **button like checkbox** cannot meet our needs, here comes `check-tag`. You can use `type` prop in ^(2.5.4).
 
 :::demo basic check-tag usage, the API is rather simple.
 
@@ -75,27 +75,27 @@ tag/checkable
 
 ## Tag API
 
-### Tag Attributes
+### Attributes
 
-| Name                | Description                          | Type                                                        | Default |
-| ------------------- | ------------------------------------ | ----------------------------------------------------------- | ------- |
-| type                | type of Tag                          | ^[enum]`'success' \| 'info' \| 'warning' \| 'danger' \| ''` | ''      |
-| closable            | whether Tag can be removed           | ^[boolean]                                                  | false   |
-| disable-transitions | whether to disable animations        | ^[boolean]                                                  | false   |
-| hit                 | whether Tag has a highlighted border | ^[boolean]                                                  | false   |
-| color               | background color of the Tag          | ^[string]                                                   | ''      |
-| size                | size of Tag                          | ^[enum]`'large' \| 'default' \| 'small' \| ''`              | ''      |
-| effect              | theme of Tag                         | ^[enum]`'dark' \| 'light' \| 'plain'`                       | light   |
-| round               | whether Tag is rounded               | ^[boolean]                                                  | false   |
+| Name                | Description                          | Type                                                               | Default |
+| ------------------- | ------------------------------------ | ------------------------------------------------------------------ | ------- |
+| type                | type of Tag                          | ^[enum]`'primary' \| 'success' \| 'info' \| 'warning' \| 'danger'` | primary |
+| closable            | whether Tag can be removed           | ^[boolean]                                                         | false   |
+| disable-transitions | whether to disable animations        | ^[boolean]                                                         | false   |
+| hit                 | whether Tag has a highlighted border | ^[boolean]                                                         | false   |
+| color               | background color of the Tag          | ^[string]                                                          | —       |
+| size                | size of Tag                          | ^[enum]`'large' \| 'default' \| 'small'`                           | —       |
+| effect              | theme of Tag                         | ^[enum]`'dark' \| 'light' \| 'plain'`                              | light   |
+| round               | whether Tag is rounded               | ^[boolean]                                                         | false   |
 
-### Tag Events
+### Events
 
 | Name  | Description                  | Type                                   |
 | ----- | ---------------------------- | -------------------------------------- |
 | click | triggers when Tag is clicked | ^[Function]`(evt: MouseEvent) => void` |
 | close | triggers when Tag is removed | ^[Function]`(evt: MouseEvent) => void` |
 
-### Tag Slots
+### Slots
 
 | Name    | Description               |
 | ------- | ------------------------- |
@@ -103,19 +103,21 @@ tag/checkable
 
 ## CheckTag API
 
-### CheckTag Attributes
+### Attributes
 
-| Name                      | Description | Type       | Default |
-| ------------------------- | ----------- | ---------- | ------- |
-| checked / v-model:checked | is checked  | ^[boolean] | false   |
+| Name                      | Description                       | Type                                                               | Default |
+| ------------------------- | --------------------------------- | ------------------------------------------------------------------ | ------- |
+| checked / v-model:checked | is checked                        | ^[boolean]                                                         | false   |
+| disabled ^(2.8.2)         | whether the check-tag is disabled | ^[boolean]                                                         | false   |
+| type ^(2.5.4)             | type of CheckTag                  | ^[enum]`'primary' \| 'success' \| 'info' \| 'warning' \| 'danger'` | primary |
 
-### CheckTag Events
+### Events
 
 | Name   | Description                        | Type                                  |
 | ------ | ---------------------------------- | ------------------------------------- |
 | change | triggers when Check Tag is clicked | ^[Function]`(value: boolean) => void` |
 
-### CheckTag Slots
+### Slots
 
 | Name    | Description               |
 | ------- | ------------------------- |

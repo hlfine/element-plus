@@ -1,5 +1,5 @@
 // @ts-nocheck
-import { hasOwn, isObject } from '@element-plus/utils'
+import { hasOwn, isObject, isPropAbsent } from '@element-plus/utils'
 import Node from './node'
 import { getNodeKey } from './util'
 
@@ -103,8 +103,10 @@ export default class TreeStore {
   setData(newVal: TreeData): void {
     const instanceChanged = newVal !== this.root.data
     if (instanceChanged) {
+      this.nodesMap = {}
       this.root.setData(newVal)
       this._initDefaultCheckedNodes()
+      this.setCurrentNodeKey(this.currentNodeKey)
     } else {
       this.root.updateChildren()
     }
@@ -144,7 +146,9 @@ export default class TreeStore {
   }
 
   append(data: TreeNodeData, parentData: TreeNodeData | TreeKey | Node): void {
-    const parentNode = parentData ? this.getNode(parentData) : this.root
+    const parentNode = !isPropAbsent(parentData)
+      ? this.getNode(parentData)
+      : this.root
 
     if (parentNode) {
       parentNode.insertChild({ data })
@@ -403,6 +407,7 @@ export default class TreeStore {
   }
 
   setCurrentNodeKey(key?: TreeKey, shouldAutoExpandParent = true): void {
+    this.currentNodeKey = key
     if (key === null || key === undefined) {
       this.currentNode && (this.currentNode.isCurrent = false)
       this.currentNode = null
