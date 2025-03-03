@@ -17,6 +17,7 @@
   box-sizing: border-box;
   padding: getCssVar('dialog', 'padding-primary');
   width: var(#{getCssVarName('dialog-width')}, 50%);
+  overflow-wrap: break-word;
 
   &:focus {
     outline: none !important;
@@ -33,6 +34,7 @@
     margin-bottom: 0;
     height: 100%;
     overflow: auto;
+    border-radius: 0px;
   }
 
   @include e(wrapper) {
@@ -56,10 +58,13 @@
     padding-bottom: getCssVar('dialog', 'padding-primary');
 
     &.show-close {
-      padding-right: calc(getCssVar('dialog', 'padding-primary') + var(
-              #{getCssVarName('message-close-size')},
-              map.get($message, 'close-size')
-      ));
+      padding-right: calc(
+        getCssVar('dialog', 'padding-primary') +
+          var(
+            #{getCssVarName('message-close-size')},
+            map.get($message, 'close-size')
+          )
+      );
     }
   }
 
