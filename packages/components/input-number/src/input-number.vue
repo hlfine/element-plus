@@ -17,10 +17,12 @@
       :class="[ns.e('decrease'), ns.is('disabled', minDisabled)]"
       @keydown.enter="decrease"
     >
-      <el-icon>
-        <arrow-down v-if="controlsAtRight" />
-        <minus v-else />
-      </el-icon>
+      <slot name="decrease-icon">
+        <el-icon>
+          <arrow-down v-if="controlsAtRight" />
+          <minus v-else />
+        </el-icon>
+      </slot>
     </span>
     <span
       v-if="controls"
@@ -30,10 +32,12 @@
       :class="[ns.e('increase'), ns.is('disabled', maxDisabled)]"
       @keydown.enter="increase"
     >
-      <el-icon>
-        <arrow-up v-if="controlsAtRight" />
-        <plus v-else />
-      </el-icon>
+      <slot name="increase-icon">
+        <el-icon>
+          <arrow-up v-if="controlsAtRight" />
+          <plus v-else />
+        </el-icon>
+      </slot>
     </span>
     <el-input
       :id="id"
@@ -48,16 +52,22 @@
       :max="max"
       :min="min"
       :name="name"
-      :label="label"
+      :aria-label="ariaLabel"
       :validate-event="false"
-      @wheel.prevent
       @keydown.up.prevent="increase"
       @keydown.down.prevent="decrease"
       @blur="handleBlur"
       @focus="handleFocus"
       @input="handleInput"
       @change="handleInputChange"
-    />
+    >
+      <template v-if="$slots.prefix" #prefix>
+        <slot name="prefix" />
+      </template>
+      <template v-if="$slots.suffix" #suffix>
+        <slot name="suffix" />
+      </template>
+    </el-input>
   </div>
 </template>
 <script lang="ts" setup>
@@ -74,6 +84,7 @@ import { vRepeatClick } from '@element-plus/directives'
 import { useLocale, useNamespace } from '@element-plus/hooks'
 import {
   debugWarn,
+  isFirefox,
   isNumber,
   isString,
   isUndefined,
@@ -219,6 +230,9 @@ const verifyValue = (
   }
   if (stepStrictly) {
     newVal = toPrecision(Math.round(newVal / step) * step, precision)
+    if (newVal !== value) {
+      update && emit(UPDATE_MODEL_EVENT, newVal)
+    }
   }
   if (!isUndefined(precision)) {
     newVal = toPrecision(newVal, precision)
@@ -239,10 +253,12 @@ const setCurrentValue = (
     emit(UPDATE_MODEL_EVENT, newVal!)
     return
   }
-  if (oldVal === newVal) return
+  if (oldVal === newVal && value) return
   data.userInput = null
   emit(UPDATE_MODEL_EVENT, newVal!)
-  emit(CHANGE_EVENT, newVal!, oldVal!)
+  if (oldVal !== newVal) {
+    emit(CHANGE_EVENT, newVal!, oldVal!)
+  }
   if (props.validateEvent) {
     formItem?.validate?.('change').catch((err) => debugWarn(err))
   }
@@ -277,6 +293,12 @@ const handleFocus = (event: MouseEvent | FocusEvent) => {
 
 const handleBlur = (event: MouseEvent | FocusEvent) => {
   data.userInput = null
+  // This is a Firefox-specific problem. When non-numeric content is entered into a numeric input box,
+  // the content displayed on the page is not cleared after the value is cleared. #18533
+  // https://bugzilla.mozilla.org/show_bug.cgi?id=1398528
+  if (isFirefox() && data.currentValue === null && input.value?.input) {
+    input.value.input.value = ''
+  }
   emit('blur', event)
   if (props.validateEvent) {
     formItem?.validate?.('blur').catch((err) => debugWarn(err))
@@ -288,6 +310,10 @@ const setCurrentValueToModelValue = () => {
     data.currentValue = props.modelValue
   }
 }
+const handleWheel = (e: WheelEvent) => {
+  if (document.activeElement === e.target) e.preventDefault()
+}
+
 watch(
   () => props.modelValue,
   (value, oldValue) => {
@@ -326,6 +352,7 @@ onMounted(() => {
     }
     emit(UPDATE_MODEL_EVENT, val!)
   }
+  innerInput.addEventListener('wheel', handleWheel, { passive: false })
 })
 onUpdated(() => {
   const innerInput = input.value?.input
